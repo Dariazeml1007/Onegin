@@ -5,66 +5,95 @@
 #include <TXLib.h>
 #include <sys\stat.h>
 
+struct Text_t
+{
+    size_t size = 0;
+    char *text = NULL;
+    const char **massive_pointers = NULL;
+    size_t count_strings = 0;
+
+};
+
 int bubble_sort (const char **massive_pointers, size_t size);
 void change (const char **massive_pointers1, const char **massive_pointers2);
+void ReadTextFromFile (Text_t *onegin, const char *name_of_file);
+void WriteTextToFile (Text_t *onegin, const char *name_of_file);
 
 int main()
 {
-    FILE *pFile = fopen ("Onegin.txt", "r");
+    struct Text_t onegin = {};
+    ReadTextFromFile (&onegin, "Onegin.txt");
+
+    bubble_sort (onegin.massive_pointers, onegin.count_strings);
+
+    WriteTextToFile (&onegin, "SortOnegin.txt");
+
+    return EXIT_SUCCESS;
+}
+
+void ReadTextFromFile (Text_t *onegin, const char *name_of_file)
+{
+    FILE *pFile = fopen (name_of_file, "r");
     if (pFile == NULL)
     {
         printf("Not opened\n");
-        return EXIT_FAILURE;
     }
 
-    fseek (pFile, 0, SEEK_END);
-    size_t size = ftell(pFile);
-    fseek (pFile, 0, SEEK_SET);
+    int ret;
+    struct stat buf;
 
-    char *text = (char*) calloc (size / sizeof(char) + 1, sizeof(char));
-    if (text == NULL)
+    if ((ret = stat(name_of_file, &buf)) != 0)
+    {
+        printf("stat failure error .%d", ret);
+    }
+
+    onegin -> size = buf.st_size;
+
+    onegin -> text = (char*) calloc (onegin -> size / sizeof(char) + 1, sizeof(char));
+    if (onegin -> text == NULL)
         printf ("Allocation error");
-
-    if (fread (text, sizeof(char), size, pFile) == 0)
+    size_t amount_of_read = 0;
+    if ((amount_of_read = fread (onegin -> text, sizeof(char), onegin -> size, pFile)) == 0)
         printf ("Haven't read from file");
 
-    size_t count = 0;
-    for (size_t i = 0; text[i] != '\0'; i++)
-        if (text[i] == '\n')
-            count ++;
 
-    const char **massive_pointers = (const char**) calloc(count, sizeof(char*));
+    for (size_t i = 0; (onegin -> text)[i] != '\0'; i++)
+        if ((onegin -> text)[i] == '\n')
+            (onegin -> count_strings) ++;
 
-    massive_pointers[0] = text;
+    onegin -> massive_pointers = (const char**) calloc((onegin -> count_strings), sizeof(char*));
 
-    for (size_t i = 0, j = 1; text[i] != '\0'; i++)
-        if (text[i] == '\n')
+    (onegin -> massive_pointers)[0] = onegin -> text;
+
+    for (size_t i = 0, j = 1; (onegin ->text[i]) != '\0'; i++)
+        if ((onegin -> text)[i] == '\n')
         {
-            text[i] = '\0';
-            massive_pointers[j++] = text + i + 1;
+            (onegin -> text)[i] = '\0';
+            (onegin -> massive_pointers)[j++] = (onegin -> text) + i + 1;
         }
 
-    bubble_sort (massive_pointers, count);
+    fclose (pFile);
 
-    FILE *pFile1 = fopen ("SortOnegin.txt", "w");
+
+}
+
+void WriteTextToFile (Text_t *onegin, const char *name_of_file)
+{
+    FILE *pFile1 = fopen (name_of_file, "w");
     if(pFile1 == NULL) {
         printf("Error opening file to write.\n");
-        return EXIT_FAILURE;
     }
 
-    for (size_t i = 0; i < count; i++)
+    for (size_t i = 0; i < (onegin -> count_strings); i++)
     {
-        if (fputs(massive_pointers[i], pFile1) < 0)
+        if (fputs((onegin ->massive_pointers)[i], pFile1) < 0)
             printf("not put\n");
         fputs("\n", pFile1);
     }
 
-    fclose (pFile);
+
     fclose (pFile1);
-    return EXIT_SUCCESS;
 }
-
-
 void change (const char **massive_pointers1, const char **massive_pointers2)
 {
     assert(massive_pointers1);
