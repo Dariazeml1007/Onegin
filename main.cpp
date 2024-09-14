@@ -4,6 +4,8 @@
 #include <assert.h>
 #include <TXLib.h>
 #include <sys\stat.h>
+#include <stdbool.h>
+#include <ctype.h>
 
 typedef enum
 {
@@ -34,6 +36,7 @@ typedef enum
 
 } StatusPointer;
 
+
 struct Text_t
 {
     size_t size = 0;
@@ -46,7 +49,8 @@ struct Text_t
 
 };
 
-int bubble_sort (const char **massive_pointers, size_t size);
+bool is_alpha(char c);
+int bubble_sort (Text_t *onegin);
 void change (const char **massive_pointers1, const char **massive_pointers2);
 int read_text_from_file (Text_t *onegin, const char *name_of_file);
 int write_text_to_file (Text_t *onegin, const char *name_of_file);
@@ -56,18 +60,19 @@ int make_massive_pointers (Text_t *onegin);
 int make_massive_text (Text_t *onegin);
 int write_sort_onegin (Text_t *onegin, const char *name_of_file);
 int write_origin_onegin(Text_t *onegin);
+int strcmp_ (const char *s1, const char *s2);
+int strcmp_rev (const char *s1, const char *s2);
 
 int main()
 {
     struct Text_t onegin = {};
-
     if (read_text_from_file (&onegin, "Onegin.txt"))
     {
         printf ("Not read");
         return NOT_READ;
     }
 
-    bubble_sort (onegin.massive_pointers, onegin.count_strings);
+    bubble_sort (&onegin);
 
     if (write_text_to_file (&onegin, "SortOnegin.txt"))
     {
@@ -79,6 +84,15 @@ int main()
     free(onegin.massive_pointers);
 
     return EXIT_SUCCESS;
+}
+
+bool is_alpha(char c)
+{
+    char alphabet[] = "ABCCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    for (int i = 0; i < 52; i++)
+        if (c == alphabet[i])
+            return true;
+    return false;
 }
 
 int open_file (Text_t *onegin, const char *name_of_file)
@@ -245,8 +259,8 @@ int write_text_to_file (Text_t *onegin, const char *name_of_file)
     if (write_sort_onegin (onegin, name_of_file))
         return WRITE_POINTERS_ERROR;
 
-    if (write_origin_onegin (onegin))
-        return WRITE_POINTERS_ERROR;
+    // if (write_origin_onegin (onegin))
+    //     return WRITE_POINTERS_ERROR;
 
     if (fclose (onegin -> p_file_for_write) == 0)
         return SUCCESS_WRITE_FILE;
@@ -267,20 +281,61 @@ void change (const char **massive_pointers1, const char **massive_pointers2)
     *massive_pointers2 = temp;
 }
 
-int bubble_sort (const char **massive_pointers, size_t size)
+int strcmp_ (const char *s1, const char *s2)
 {
-    assert(massive_pointers);
-    assert(*massive_pointers);
+    assert (s1 != NULL);
+    assert (s2 != NULL);
 
-    size_t n = size;
-    for (size_t j = 0; j < size - 1; j++)
+    for ( int i = 0; s1[i] != '\0' && s2[i] != '\0'; i++ )
+    {
+        if ( s1[i] != s2[i] )
+            return s1[i] - s2[i];
+    }
+    return 0;
+}
+
+int strcmp_rev (const char *s1, const char *s2)
+{
+    assert (s1);
+    assert (s2);
+    const char *first_pointer = s1;
+    const char *second_pointer = s2;
+
+    while (*(first_pointer + 1) != '\0')
+        (first_pointer)++;
+
+    while (*(second_pointer + 1) != '\0')
+        (second_pointer)++;
+
+    for (;first_pointer != s1  && second_pointer != s2; first_pointer--, second_pointer-- )
+    {
+        while (!isalpha(*first_pointer) && first_pointer != s1)
+            first_pointer --;
+        while (!isalpha(*second_pointer) && second_pointer != s2)
+            second_pointer --;
+        int diff = toupper(*first_pointer) - toupper(*second_pointer);
+        if (diff != 0)
+            return diff;
+
+    }
+    return toupper(*first_pointer) - toupper(*second_pointer);
+}
+
+int bubble_sort (Text_t *onegin)
+{
+    assert(onegin);
+
+    size_t n = onegin  -> count_strings;
+    for (size_t j = 0; j < (onegin  -> count_strings); j++)
     {
         for (size_t i = 1; i < n; i++)
+        {
 
-            if (strcmp(massive_pointers[i], massive_pointers[i - 1]) < 0)
+            if (strcmp_rev((onegin -> massive_pointers)[i], (onegin ->  massive_pointers)[i - 1]) < 0)
             {
-                change(&massive_pointers[i], &massive_pointers[i - 1]);
+                change(&(onegin -> massive_pointers)[i], &(onegin ->  massive_pointers)[i - 1]);
             }
+        }
         n--;
     }
     return 0;
