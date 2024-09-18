@@ -10,7 +10,6 @@
 #include "open_and_read.h"
 #include "data.h"
 
-
 int open_file (Text_t *onegin, const char *name_of_file)
 {
     assert(name_of_file);
@@ -124,6 +123,4 @@ int read_text_from_file (Text_t *onegin, const char *name_of_file)
         return SUCCESS_READ_FILE;
 
     return NOT_CLOSED;
-
-
 }

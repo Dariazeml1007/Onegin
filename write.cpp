@@ -57,8 +57,8 @@ int write_text_to_file (Text_t *onegin, const char *name_of_file)
     if (write_sort_onegin (onegin, name_of_file))
         return WRITE_POINTERS_ERROR;
 
-    // if (write_origin_onegin (onegin))
-    //     return WRITE_POINTERS_ERROR;
+    if (write_origin_onegin (onegin))
+        return WRITE_POINTERS_ERROR;
 
     if (fclose (onegin -> p_file_for_write) == 0)
         return SUCCESS_WRITE_FILE;

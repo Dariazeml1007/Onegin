@@ -30,7 +30,6 @@ typedef enum
 
 } StatusPointer;
 
-
 struct Text_t
 {
     size_t size = 0;
@@ -42,5 +41,6 @@ struct Text_t
     FILE *p_file_for_write = NULL;
 
 };
+
 
 #endif

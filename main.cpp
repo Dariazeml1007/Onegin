@@ -12,18 +12,21 @@
 #include "sort_text.h"
 #include "open_and_read.h"
 
+const char* INPUT_FILE_NAME = "Onegin.txt";
+const char* OUTPUT_FILE_NAME = "SortOnegin.txt";
+
 int main()
 {
     struct Text_t onegin = {};
-    if (read_text_from_file (&onegin, "Onegin.txt"))
+    if (read_text_from_file (&onegin, INPUT_FILE_NAME))
     {
         printf ("Not read");
         return NOT_READ;
     }
 
-    bubble_sort (&onegin);
+    bubble_sort (onegin.massive_pointers, onegin.count_strings, sizeof(char *), strcmp_);
 
-    if (write_text_to_file (&onegin, "SortOnegin.txt"))
+    if (write_text_to_file (&onegin, OUTPUT_FILE_NAME))
     {
         printf("Not Write");
         return NOT_WRITE;
