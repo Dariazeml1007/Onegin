@@ -22,6 +22,7 @@ int open_file (Text_t *onegin, const char *name_of_file)
     }
     return SUCCESS_OPEN;
 }
+
 int get_size_of_file (Text_t *onegin, const char *name_of_file)
 {
     assert(name_of_file);
@@ -37,6 +38,7 @@ int get_size_of_file (Text_t *onegin, const char *name_of_file)
     onegin -> size = buffer.st_size;
     return SUCCESS_DEFINE_SIZE;
 }
+
 int make_massive_text (Text_t *onegin)
 {
     assert(onegin);
@@ -61,6 +63,7 @@ int make_massive_text (Text_t *onegin)
             (onegin -> count_strings)++;
     return SUCCESS;
 }
+
 int make_massive_pointers (Text_t *onegin)
 {
     assert(onegin);
@@ -87,6 +90,7 @@ int make_massive_pointers (Text_t *onegin)
 
     return SUCCESS;
 }
+
 int read_text_from_file (Text_t *onegin, const char *name_of_file)
 {
     assert(name_of_file);
