@@ -1,6 +1,6 @@
+
 #ifndef TEXT_DATA
 #define TEXT_DATA
-
 typedef enum
 {
     SUCCESS_READ_FILE = 0,
@@ -10,9 +10,7 @@ typedef enum
     NOT_CLOSED = 1,
     NOT_READ = 1,
     NOT_WRITE = 1
-
 } StatusFile;
-
 typedef enum
 {
     SUCCESS_DEFINE_SIZE = 0,
@@ -21,26 +19,27 @@ typedef enum
     MAKE_POINTERS_ERROR = 1,
     MAKE_TEXT_ERROR = 1,
     WRITE_POINTERS_ERROR = 1
-
 } StatusOfRead;
-
 typedef enum
 {
     ALLOCCATION_ERROR = 1
-
 } StatusPointer;
+
+struct String_pointers
+{
+    const char *start_str = NULL;
+    const char *end_str = NULL;
+};
 
 struct Text_t
 {
     size_t size = 0;
     char *text = NULL;
-    const char **massive_pointers = NULL;
     size_t count_strings = 0;
     size_t amount_of_read = 0;
     FILE *p_file_for_read = NULL;
     FILE *p_file_for_write = NULL;
-
+    String_pointers *massive_struct = NULL;
 };
-
 
 #endif

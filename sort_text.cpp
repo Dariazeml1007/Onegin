@@ -27,19 +27,25 @@ int strcmp_ (const void *s1, const void *s2)
 {
     assert (s1);
     assert (s2);
+    const String_pointers *first_line = (const String_pointers *)s1;
+    const String_pointers *second_line = (const String_pointers *)s2;
 
-    const char *first_pointer = *(const char* const *)s1;
-    const char *second_pointer = *(const char* const *)s2;
+    const char *first_pointer = first_line -> start_str;
+    const char *second_pointer = second_line -> start_str;
 
-    for (; *first_pointer  != '\0' && *second_pointer != '\0'; first_pointer++, second_pointer++ )
+    for (;first_pointer != first_line -> end_str &&
+          second_pointer != second_line -> end_str;
+         first_pointer--, second_pointer-- )
     {
-        while (!isalpha(*first_pointer) && *first_pointer != '\0')
-            first_pointer++;
-        while (!isalpha(*second_pointer) && *second_pointer != '\0')
-            second_pointer++;
+        while (!isalpha(*first_pointer) && first_pointer != first_line -> end_str)
+            first_pointer --;
+        while (!isalpha(*second_pointer) && second_pointer != second_line -> end_str)
+            second_pointer --;
+
         int diff = toupper(*first_pointer) - toupper(*second_pointer);
         if (diff != 0)
             return diff;
+
     }
     return toupper(*first_pointer) - toupper(*second_pointer);
 }
@@ -48,23 +54,21 @@ int strcmp_rev (const void *s1, const void *s2)
 {
     assert (s1);
     assert (s2);
-    const char *first_pointer = *(const char* const *)s1;
-    const char *second_pointer = *(const char* const *)s2;
+    const String_pointers *first_line = (const String_pointers *)s1;
+    const String_pointers *second_line = (const String_pointers *)s2;
 
-    while (*(first_pointer + 1) != '\0')
-        (first_pointer)++;
+    const char *first_pointer = first_line -> end_str;
+    const char *second_pointer = second_line -> end_str;
 
-    while (*(second_pointer + 1) != '\0')
-        (second_pointer)++;
-
-    for (;first_pointer != *(const char* const *)s1  &&
-         second_pointer != *(const char* const *)s2;
+    for (;first_pointer != first_line -> start_str &&
+          second_pointer != second_line -> start_str;
          first_pointer--, second_pointer-- )
     {
-        while (!isalpha(*first_pointer) && first_pointer != *(const char* const *)s1)
+        while (!isalpha(*first_pointer) && first_pointer != first_line -> start_str)
             first_pointer --;
-        while (!isalpha(*second_pointer) && second_pointer != *(const char* const *)s2)
+        while (!isalpha(*second_pointer) && second_pointer != second_line -> start_str)
             second_pointer --;
+
         int diff = toupper(*first_pointer) - toupper(*second_pointer);
         if (diff != 0)
             return diff;
@@ -81,24 +85,11 @@ void bubble_sort (void *massive_pointers, size_t size, size_t l_size, int (* Com
     while (temp_size > 1)
     {
         for (size_t index = 1; index < temp_size; index++)
-        {
+            if (Compare_func((char *)massive_pointers + index * l_size,
+                             (char *)massive_pointers + (index - 1) * l_size) < 0)
+                change((char *)massive_pointers + index * l_size,
+                       (char *)massive_pointers + (index - 1) * l_size, l_size);
 
-            if (Compare_func(((char *)massive_pointers + index * l_size),
-                ((char *)massive_pointers + (index - 1) * l_size)) < 0)
-            {
-                change(((char *)massive_pointers + index * l_size),
-                       ((char *)massive_pointers + (index - 1) * l_size), l_size);
-            }
-        }
         temp_size--;
     }
 }
-
-
-
-
-
-
-
-
-

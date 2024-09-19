@@ -21,36 +21,31 @@ int write_sort_onegin (Text_t *onegin, const char *name_of_file)
         printf("Error opening file to write.\n");
         return FAILED_OPEN_ERROR;
     }
-
     for (size_t i = 0; i < (onegin -> count_strings); i++)
     {
-        if (fputs((onegin -> massive_pointers)[i], onegin -> p_file_for_write) < 0)
+        if (fputs((onegin -> massive_struct)[i].start_str, onegin -> p_file_for_write) < 0)
             printf("not put\n");
         fputs("\n", onegin -> p_file_for_write);
     }
     fputs("\n", onegin -> p_file_for_write);
-
     return SUCCESS;
 }
 
 int write_origin_onegin (Text_t *onegin)
 {
     assert(onegin);
-
     for (size_t i = 0; i < (onegin -> amount_of_read); i++)
     {
         if ((onegin -> text)[i] =='\0')
             fputs("\n", onegin -> p_file_for_write);
         else
             putc((onegin -> text)[i], onegin -> p_file_for_write);
-
     }
     return SUCCESS;
 }
 
 int write_text_to_file (Text_t *onegin, const char *name_of_file)
 {
-
     assert(onegin);
     assert(name_of_file);
 
@@ -64,6 +59,4 @@ int write_text_to_file (Text_t *onegin, const char *name_of_file)
         return SUCCESS_WRITE_FILE;
 
     return NOT_CLOSED;
-
 }
-

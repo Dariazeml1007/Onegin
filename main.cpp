@@ -24,18 +24,19 @@ int main()
         return NOT_READ;
     }
 
-    bubble_sort (onegin.massive_pointers, onegin.count_strings, sizeof(char *), strcmp_);
+    bubble_sort (onegin.massive_struct, onegin.count_strings, sizeof(String_pointers), strcmp_rev);
 
-    if (write_text_to_file (&onegin, OUTPUT_FILE_NAME))
+    if (write_text_to_file(&onegin, OUTPUT_FILE_NAME))
     {
-        printf("Not Write");
+        printf ("Not write");
         return NOT_WRITE;
     }
 
+    free (onegin.massive_struct);
     free(onegin.text);
-    free(onegin.massive_pointers);
 
-    return EXIT_SUCCESS;
+    return SUCCESS;
+
 }
 
 
